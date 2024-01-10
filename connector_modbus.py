@@ -55,11 +55,7 @@ class ModbusDataCollector2000Delux:
         dbuspath = {
             '/Ac/Power': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.ActivePower},
             '/Ac/L1/Current': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.PhaseACurrent},
-            '/Ac/L1/Voltage': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.PhaseAVoltage},
-            '/Ac/L2/Current': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.PhaseBCurrent},
-            '/Ac/L2/Voltage': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.PhaseBVoltage},
-            '/Ac/L3/Current': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.PhaseCCurrent},
-            '/Ac/L3/Voltage': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.PhaseCVoltage},
+            '/Ac/L1/Voltage': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.LineVoltageBetweenPhasesAAndB},
             '/Dc/Power': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.InputPower},
             '/Ac/MaxPower': {'initial': 0, "sun2000": registers.InverterEquipmentRegister.MaximumActivePower},
         }
@@ -83,16 +79,10 @@ class ModbusDataCollector2000Delux:
 
         freq = self.invSun2000.read(registers.InverterEquipmentRegister.GridFrequency)
         data['/Ac/L1/Frequency'] = freq
-        data['/Ac/L2/Frequency'] = freq
-        data['/Ac/L3/Frequency'] = freq
 
         cosphi = float(self.invSun2000.read((registers.InverterEquipmentRegister.PowerFactor)))
         data['/Ac/L1/Power'] = cosphi * float(data['/Ac/L1/Voltage']) * float(
             data['/Ac/L1/Current']) * self.power_correction_factor
-        data['/Ac/L2/Power'] = cosphi * float(data['/Ac/L2/Voltage']) * float(
-            data['/Ac/L2/Current']) * self.power_correction_factor
-        data['/Ac/L3/Power'] = cosphi * float(data['/Ac/L3/Voltage']) * float(
-            data['/Ac/L3/Current']) * self.power_correction_factor
 
         return data
 
@@ -115,8 +105,6 @@ class ModbusDataCollector2000Delux:
         except:
             print("Problem while getting static data modbus TCP")
             return None
-
-
 
 ## Just for testing ##
 if __name__ == "__main__":
